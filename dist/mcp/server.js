@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMcpServer = createMcpServer;
 const index_js_1 = require("@modelcontextprotocol/sdk/server/index.js");
 const types_js_1 = require("@modelcontextprotocol/sdk/types.js");
-const user_model_1 = __importDefault(require("../Model/UserDetails.Model/user.model"));
 const project_model_1 = __importDefault(require("../Model/ProjectDetails/project.model"));
+const Tools_1 = require("./Tools"); // modular tools ইম্পোর্ট করা হলো
 function createMcpServer() {
     const server = new index_js_1.Server({
         name: "portfolio-knowledge-base",
@@ -32,7 +32,7 @@ function createMcpServer() {
     });
     server.setRequestHandler(types_js_1.ReadResourceRequestSchema, async (request) => {
         if (request.params.uri === "user://profile") {
-            const user = await user_model_1.default.findOne();
+            const user = await project_model_1.default.findOne();
             if (!user) {
                 throw new Error("User profile not found in database.");
             }
@@ -48,58 +48,23 @@ function createMcpServer() {
         }
         throw new Error(`Resource not found: ${request.params.uri}`);
     });
+    // অটোমেটিক সব টুল লিস্ট করার জন্য
     server.setRequestHandler(types_js_1.ListToolsRequestSchema, async () => {
         return {
-            tools: [
-                {
-                    name: "get_user_profile",
-                    description: "Get detailed information about the user (me), including skills, bio, and interests.",
-                    inputSchema: {
-                        type: "object",
-                        properties: {},
-                    },
-                },
-                {
-                    name: "get_projects",
-                    description: "Get a list of all projects with their titles, descriptions, and status.",
-                    inputSchema: {
-                        type: "object",
-                        properties: {
-                            status: {
-                                type: "string",
-                                enum: ["active", "completed", "archived"],
-                                description: "Filter projects by status",
-                            },
-                        },
-                    },
-                },
-            ],
+            tools: Tools_1.tools.map((tool) => ({
+                name: tool.name,
+                description: tool.description,
+                inputSchema: tool.inputSchema,
+            })),
         };
     });
+    // অটোমেটিক সঠিক টুলটির হেন্ডলার কল করার জন্য
     server.setRequestHandler(types_js_1.CallToolRequestSchema, async (request) => {
         const { name, arguments: args } = request.params;
         try {
-            if (name === "get_user_profile") {
-                const user = await user_model_1.default.findOne();
-                if (!user) {
-                    return {
-                        content: [{ type: "text", text: "No user profile found in the database." }],
-                        isError: true,
-                    };
-                }
-                return {
-                    content: [{ type: "text", text: JSON.stringify(user, null, 2) }],
-                };
-            }
-            if (name === "get_projects") {
-                const query = {};
-                if (args?.status) {
-                    query.status = args.status;
-                }
-                const projects = await project_model_1.default.find(query);
-                return {
-                    content: [{ type: "text", text: JSON.stringify(projects, null, 2) }],
-                };
+            const tool = Tools_1.tools.find((t) => t.name === name);
+            if (tool) {
+                return await tool.handler(args);
             }
             throw new Error(`Tool not found: ${name}`);
         }
@@ -112,4 +77,3 @@ function createMcpServer() {
     });
     return server;
 }
-;
