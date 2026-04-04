@@ -6,7 +6,7 @@ async function main() {
     try {
         const transport = new StdioClientTransport({
             command: "node",
-            args: [path.join(__dirname, "dist/mcp/stdio.js")],
+            args: [path.join(process.cwd(), "dist/mcp/stdio.js")],
         });
 
         const client = new Client(
@@ -16,7 +16,7 @@ async function main() {
 
         await client.connect(transport);
         
-        console.log("Calling get_user_profile...");
+        console.error("Calling get_user_profile...");
         const result = await client.callTool({
             name: "get_user_profile",
             arguments: {},

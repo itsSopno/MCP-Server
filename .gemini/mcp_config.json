@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "portfolio-server": {
+      "command": "node",
+      "args": [
+        "d:/web development/MCP SERVER/Backend/dist/mcp/stdio.js"
+      ],
+      "cwd": "d:/web development/MCP SERVER/Backend",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}

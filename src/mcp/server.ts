@@ -8,7 +8,8 @@ import {
 import User from "../Model/UserDetails.Model/user.model";
 import Project from "../Model/ProjectDetails/project.model";
 
-export const server = new Server(
+export function createMcpServer(){
+const server = new Server(
   {
     name: "portfolio-knowledge-base",
     version: "1.0.0",
@@ -117,4 +118,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       isError: true,
     };
   }
-});
+})
+return server;
+};

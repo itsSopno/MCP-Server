@@ -9,7 +9,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const apiKey = process.env.GEMINI_API;
 if (!apiKey) {
-    console.error("❌ GEMINI_API is not defined in environment variables");
+    console.error("GEMINI_API is not defined in environment variables");
 }
 const genAI = new generative_ai_1.GoogleGenerativeAI(apiKey || "");
 exports.geminiModel = genAI.getGenerativeModel({
@@ -20,10 +20,10 @@ const testGemini = async () => {
         console.log("Testing Gemini API connection...");
         const result = await exports.geminiModel.generateContent("Hello, how are you?");
         const text = result.response.text();
-        console.log("✅ Gemini Response:", text);
+        console.log("Gemini Response:", text);
     }
     catch (err) {
-        console.error("❌ Gemini Test Error:", err.message || err);
+        console.error("Gemini Test Error:", err.message || err);
     }
 };
 exports.testGemini = testGemini;

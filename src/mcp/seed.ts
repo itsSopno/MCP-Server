@@ -34,7 +34,7 @@ async function seed() {
       focusArea: ["Web Development", "AI Agents", "Motion Design"],
     });
 
-    console.log("✅ User created:", user.name);
+    console.log("User created:", user.name);
 
     // Create Projects
     const projects = [
@@ -59,11 +59,11 @@ async function seed() {
     ];
 
     await Project.insertMany(projects);
-    console.log("✅ Projects seeded successfully.");
+    console.log("Projects seeded successfully.");
 
     process.exit(0);
   } catch (error) {
-    console.error("❌ Seeding failed:", error);
+    console.error("Seeding failed:", error);
     process.exit(1);
   }
 }

@@ -16,11 +16,11 @@ const startServer = async () => {
     try {
         await (0, database_1.default)();
         server.listen(PORT, () => {
-            console.log(`🚀 Server is running on http://localhost:${PORT}`);
+            console.log(`Server is running on http://localhost:${PORT}`);
         });
     }
     catch (error) {
-        console.error("❌ Failed to start server:", error);
+        console.error("Failed to start server:", error);
         process.exit(1);
     }
 };
